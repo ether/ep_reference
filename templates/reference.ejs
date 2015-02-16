@@ -1,0 +1,44 @@
+<div id='referenceContainer'>
+
+  <div id='referenceSelector'>
+    <!-- selector for choosing which pad to refer to -->
+    <form id='referenceForm'>
+      <input id='referenceInput' placeholder='padId'>
+      <input type='submit' id='referenceSubmit'>
+    </form>
+  </div>
+
+  <div id='referenceActions'>
+    <button id='referenceCreate'>Create reference</button>
+    <!-- Actions such as create a reference -->
+  </div>
+
+  <div id='reference'>
+    <!-- Actual reference document contents -->
+  </div>
+</div>
+
+<style>
+#referenceContainer{
+  position:fixed;
+  top:38px;
+  width:400px;
+  bottom:0px;
+  background:lightgrey;
+  right:0px;
+  z-index:9;
+}
+
+#referenceSelector{
+  display:inline-block;
+  width:220px;
+}
+#referenceActions{
+  display:inline-block;
+  width:150px;
+}
+
+#reference{
+  background:#fff;
+}
+</style>
