@@ -1,5 +1,9 @@
 var underscore = require('ep_etherpad-lite/static/js/underscore');
 
+exports.aceRegisterBlockElements = function(){
+  return ['reference'];
+}
+
 exports.handleClientMessage_CUSTOM = function(hook, context, cb){
   if(context.payload){
     if(context.payload.action == "recievereferenceMessage"){
@@ -44,7 +48,7 @@ exports.postAceInit = function(name, context){
   var padOuter = $('iframe[name="ace_outer"]').contents();
   var padInner = padOuter.find('iframe[name="ace_inner"]');
 
-  padInner.contents().on("mousedown", ".reference" ,function(e){
+  padInner.contents().on("mousedown", "reference" ,function(e){
     loadReference(e);
   });  
 }
@@ -82,18 +86,20 @@ function referenceCreate(e, context){
 
 // Inserts the reference into the pad
 function insertReference(padId, text, context){
-  console.log("inserting reference", padId, text);
-
   var padeditor = require('ep_etherpad-lite/static/js/pad_editor').padeditor;
 
   // Puts the completed form data in the pad.
-  padeditor.ace.replaceRange(undefined, undefined, "\n"+ text +"\n");
+  padeditor.ace.replaceRange(undefined, undefined, "\n");
+  padeditor.ace.replaceRange(undefined, undefined, text);
 
   // Put the caret back into the pad
   padeditor.ace.focus();
 
+  // How many line breaks are in the pasted text?
+  var numberOfLines = text.split(/\r\n|\r|\n/).length
+
   context.ace.callWithAce(function(ace){ // call the function to apply the attribute inside ACE
-    ace.ace_applyReference(padId);
+    ace.ace_applyReference(padId, numberOfLines);
   }, 'reference', true); // TODO what's the second attribute do here?
 }
 
@@ -114,13 +120,19 @@ function loadReference(e){
 }
 
 // Applies the line attribute to the previous line
-exports.applyReference = function(padId){
+exports.applyReference = function(padId, numberOfLines){
   var ace = this;
   var rep = this.rep;
-  var lineNumber = rep.selStart[0]-1 || 0;
-
   var documentAttributeManager = this.documentAttributeManager;
-  documentAttributeManager.setAttributeOnLine(lineNumber, 'reference', padId); // make the line a task list
+  var lastLine = rep.selStart[0];
+  var firstLine = lastLine - numberOfLines;
+
+
+  // Line number is wrong if line breaks are copied...
+
+  underscore(underscore.range(firstLine, lastLine + 1)).each(function(i){
+    documentAttributeManager.setAttributeOnLine(i, 'reference', padId); // make the line a task list
+  });
 }
 
 exports.aceAttribsToClasses = function(hook_name, args, cb) {
@@ -137,8 +149,8 @@ exports.aceDomLineProcessLineAttributes = function(name, context){
   padId = padId[1];
 
   var modifier = {
-    preHtml: '<span class="reference" data-padid="'+padId+'">',
-    postHtml: '</span>',
+    preHtml: '<reference data-padid="'+padId+'">',
+    postHtml: '</reference>',
     processedMarker: true
   };
 
