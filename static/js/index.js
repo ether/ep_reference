@@ -1,5 +1,9 @@
 var underscore = require('ep_etherpad-lite/static/js/underscore');
 
+exports.aceEditorCSS = function(){
+  return ['ep_reference/static/css/editor.css'];
+};
+
 exports.aceRegisterBlockElements = function(){
   return ['reference'];
 }
