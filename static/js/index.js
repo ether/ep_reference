@@ -109,6 +109,7 @@ function loadPad(padId){
     url: "./"+padId+"/export/html",
     success: function(html){
       $('#reference').html(html); // Writes HTML to container
+      $('#referenceCreate').attr("disabled", false);
     }
   });  
 }
