@@ -93,7 +93,7 @@ function insertReference(padId, text, context){
   var padeditor = require('ep_etherpad-lite/static/js/pad_editor').padeditor;
 
   // Puts the completed form data in the pad.
-  padeditor.ace.replaceRange(undefined, undefined, "\n");
+  // padeditor.ace.replaceRange(undefined, undefined, "\n");
   padeditor.ace.replaceRange(undefined, undefined, text);
 
   // Put the caret back into the pad
@@ -130,8 +130,7 @@ exports.applyReference = function(padId, numberOfLines){
   var rep = this.rep;
   var documentAttributeManager = this.documentAttributeManager;
   var lastLine = rep.selStart[0];
-  var firstLine = lastLine - numberOfLines;
-
+  var firstLine = lastLine - (numberOfLines-1);
 
   // Line number is wrong if line breaks are copied...
 
