@@ -8,6 +8,10 @@ Install using /admin/plugins or npm install ep_reference
 ## Usage
 
 ## TODO
-* On reference highlight bring up pad being referenced
-* Method to take highlighted referenced content and pass it into the pad
-
+* Perhaps load Reference contents on hover?
+* Stop CSS being applied from pad contents in current DOM (probably use iframe)
+* Security Audit
+* Styling
+* Only allow "Create reference" once text is selected
+* On click/hover of reference content have it jump to correct point in reference document not entire reference document
+* Write test coverage
