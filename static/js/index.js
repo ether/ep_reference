@@ -150,14 +150,14 @@ exports.aceDomLineProcessLineAttributes = function(name, context){
   var cls = context.cls;
   var domline = context.domline;
   var padId = /(?:^| )reference:([A-Za-z0-9]*)/.exec(cls);
-  padId = padId[1];
-
-  var modifier = {
-    preHtml: '<reference data-padid="'+padId+'">',
-    postHtml: '</reference>',
-    processedMarker: true
-  };
-
-  return [modifier];
+  if(padId){
+    padId = padId[1];
+    var modifier = {
+      preHtml: '<reference data-padid="'+padId+'">',
+      postHtml: '</reference>',
+      processedMarker: true
+    };
+    return [modifier];
+  }
 };
 
