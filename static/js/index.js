@@ -109,7 +109,7 @@ function insertQuotation(padId, text, context){
   // How many line breaks are in the pasted text?
   var numberOfLines = text.split(/\r\n|\r|\n/).length
   context.ace.callWithAce(function(ace){ // call the function to apply the attribute inside ACE
-    ace.ace_applyReference(padId, numberOfLines);
+    ace.ace_applyQuotation(padId, numberOfLines);
   }, 'reference', true); // TODO what's the second attribute do here?
 }
 
