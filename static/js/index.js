@@ -1,3 +1,5 @@
+/* Include the Security module, we will use this later to escape a HTML attribute*/
+var Security = require('ep_etherpad-lite/static/js/security');
 var underscore = require('ep_etherpad-lite/static/js/underscore');
 
 exports.aceEditorCSS = function(){
@@ -5,7 +7,7 @@ exports.aceEditorCSS = function(){
 };
 
 exports.aceRegisterBlockElements = function(){
-  return ['reference'];
+  return ['reference', 'quotation'];
 }
 
 exports.handleClientMessage_CUSTOM = function(hook, context, cb){
@@ -26,10 +28,25 @@ exports.handleClientMessage_CUSTOM = function(hook, context, cb){
 
 exports.aceInitialized = function(hook, context){
   var editorInfo = context.editorInfo;
-  editorInfo.ace_applyReference = underscore(exports.applyReference).bind(context);
+  editorInfo.ace_applyQuotation = underscore(exports.applyQuotation).bind(context);
 }
 
 exports.postAceInit = function(name, context){
+
+  context.ace.callWithAce(function(ace){
+    var doc = ace.ace_getDocument();
+    // Hide the controls by default -- I'm nto sure why I don't do this with CSS
+
+    $(doc).find("head").append("<style type='text/css'>.control{display:none;}</style>");
+    var $inner = $(doc).find('#innerdocbody');
+
+    // On click ensure all image controls are hidden
+    $inner.on("click", ".url > a", function(e){
+      console.log(e);
+      loadPad(e.currentTarget.text);
+      return false;
+    });
+  });
 
   // Hide chat and users
   if($('#options-chatandusers').is(":checked")){
@@ -45,6 +62,9 @@ exports.postAceInit = function(name, context){
     e.preventDefault();
   });
 
+  $('#quotationCreate').click(function(e){
+    quotationCreate(e, context);
+  });
   $('#referenceCreate').click(function(e){
     referenceCreate(e, context);
   });
@@ -57,26 +77,9 @@ exports.postAceInit = function(name, context){
   });  
 }
 
-/*
-function sendreference(){
-  var myAuthorId = pad.getUserId();
-  var padId = pad.getPadId();
-  var message = $('#ep_reference_input').val().toLowerCase();
-  // Send chat message to send to the server
-  var message = {
-    type : 'reference',
-    action : 'sendreferenceMessage',
-    message : message,
-    padId : padId,
-    myAuthorId : myAuthorId
-  }
-  pad.collabClient.sendMessage(message);  // Send the reference request to the server
-}
-*/
-
-// Creates a reference event when a user clicks on the button
-// Gets the text string to reference and the padId
-function referenceCreate(e, context){
+// Creates a quotation event when a user clicks on the button
+// Gets the text string to quote and the padId
+function quotationCreate(e, context){
   var text = "";
   if (window.getSelection) {
     text = window.getSelection().toString();
@@ -85,26 +88,41 @@ function referenceCreate(e, context){
   }
 
   var padId = $('#referenceInput').val()
-  insertReference(padId, text, context);
+  insertQuotation(padId, text, context);
+}
+
+// Creates a reference event when a user clicks on the button
+// Gets the text string to reference and the padId
+function referenceCreate(e, context){
+  var padId = $('#referenceInput').val();
+  insertReference(padId, context);
+}
+
+// Inserts the quotation into the pad
+function insertQuotation(padId, text, context){
+  var padeditor = require('ep_etherpad-lite/static/js/pad_editor').padeditor;
+  // Puts the completed form data in the pad.
+  // padeditor.ace.replaceRange(undefined, undefined, "\n");
+  padeditor.ace.replaceRange(undefined, undefined, text);
+  // Put the caret back into the pad
+  padeditor.ace.focus();
+  // How many line breaks are in the pasted text?
+  var numberOfLines = text.split(/\r\n|\r|\n/).length
+  context.ace.callWithAce(function(ace){ // call the function to apply the attribute inside ACE
+    ace.ace_applyReference(padId, numberOfLines);
+  }, 'reference', true); // TODO what's the second attribute do here?
 }
 
 // Inserts the reference into the pad
-function insertReference(padId, text, context){
+function insertReference(padId, context){
   var padeditor = require('ep_etherpad-lite/static/js/pad_editor').padeditor;
 
   // Puts the completed form data in the pad.
   // padeditor.ace.replaceRange(undefined, undefined, "\n");
-  padeditor.ace.replaceRange(undefined, undefined, text);
+  padeditor.ace.replaceRange(undefined, undefined, "[["+padId+"]]");
 
   // Put the caret back into the pad
   padeditor.ace.focus();
-
-  // How many line breaks are in the pasted text?
-  var numberOfLines = text.split(/\r\n|\r|\n/).length
-
-  context.ace.callWithAce(function(ace){ // call the function to apply the attribute inside ACE
-    ace.ace_applyReference(padId, numberOfLines);
-  }, 'reference', true); // TODO what's the second attribute do here?
 }
 
 // Loads a Pads HTML from the export endpoint
@@ -114,6 +132,7 @@ function loadPad(padId){
     success: function(html){
       $('#reference').html(html); // Writes HTML to container
       $('#referenceCreate').attr("disabled", false);
+      $('#quotationCreate').attr("disabled", false);
     }
   });  
 }
@@ -125,7 +144,7 @@ function loadReference(e){
 }
 
 // Applies the line attribute to the previous line
-exports.applyReference = function(padId, numberOfLines){
+exports.applyQuotation = function(padId, numberOfLines){
   var ace = this;
   var rep = this.rep;
   var documentAttributeManager = this.documentAttributeManager;
@@ -135,15 +154,19 @@ exports.applyReference = function(padId, numberOfLines){
   // Line number is wrong if line breaks are copied...
 
   underscore(underscore.range(firstLine, lastLine + 1)).each(function(i){
-    documentAttributeManager.setAttributeOnLine(i, 'reference', padId); // make the line a task list
+    documentAttributeManager.setAttributeOnLine(i, 'quotation', padId); // make the line a task list
   });
 }
 
-exports.aceAttribsToClasses = function(hook_name, args, cb) {
-  if (args.key == 'reference' && args.value != "")
-    return cb(["reference:" + args.value]);
-};
 
+exports.aceAttribsToClasses = function(hook_name, args, cb) {
+  if (args.key == 'reference' && args.value != ""){
+    return cb(["reference:" + args.value]);
+  }
+  if (args.key == 'quotation' && args.value != ""){
+    return cb(["quotation:" + args.value]);
+  }
+};
 
 // Here we convert the class reference into a tag
 exports.aceDomLineProcessLineAttributes = function(name, context){
@@ -159,5 +182,102 @@ exports.aceDomLineProcessLineAttributes = function(name, context){
     };
     return [modifier];
   }
+  var qpadId = /(?:^| )quotation:([A-Za-z0-9]*)/.exec(cls);
+  if(qpadId){
+    qpadId = qpadId[1];
+    var modifier = {
+      preHtml: '<quotation data-padid="'+qpadId+'">',
+      postHtml: '</quotation>',
+      processedMarker: true
+    };
+    return [modifier];
+  }
 };
+
+// The below code is borrowed from ep_linkify and modified to open
+// internally on click while maintaing the ability to open in a new window
+
+exports.aceCreateDomLine = function(name, context){
+  var internalHref;
+  var cls = context.cls;
+  var domline = context.domline;
+
+  // TODO find a more elegant way.
+  var inTimeslider = (timesliderRegexp.exec(document.location.href) !== null);
+
+  if (cls.indexOf('internalHref') >= 0) // if it already has the class of internalHref
+  {
+    cls = cls.replace(/(^| )internalHref:(\S+)/g, function(x0, space, url)
+    {
+      internalHref = url;
+      return space + "url";
+    });
+  }
+
+  if (internalHref)
+  {
+    var url = (inTimeslider ? '../' : './') + internalHref;
+    var modifier = {
+      extraOpenTags: '<a onClick="openInternally()" href="' + Security.escapeHTMLAttribute(url) +'">',
+      extraCloseTags: '</a>',
+      cls: cls
+    }
+    return [modifier];
+  }
+  return;
+}
+
+
+/* Define the regular expressions we will use to detect if a string looks like a reference to a pad IE [[foo]] */
+var internalHrefRegexp = new RegExp(/\[\[([^\]]+)\]\]/g);
+
+// Define a regexp to detect if we are in timeslider
+var timesliderRegexp = new RegExp(/p\/[^\/]*\/timeslider/g);
+
+/* Take the string and remove the first and last 2 characters IE [[foo]] returns foo */
+var linkSanitizingFn = function(result){
+  if(!result) return result;
+  result.index = result.index + 2;
+  var s = result[0];
+  result[0] = s
+    .substr(2,s.length-4) // Skip the first two chars ([[) and omit the last ones (]])
+    .replace(/\s+/g, '_'); // Every space will be replaced by an underscore
+  return result;
+};
+
+
+/* CustomRegexp provides a wrapper around a RegExp Object which applies a given function to the result of the Regexp
+  @param regexp the regexp to be wrapped
+  @param sanitizeResultFn the function to be applied to the result.
+*/
+var CustomRegexp = function(regexp, sanitizeResultFn){
+  this.regexp = regexp;
+  this.sanitizeResultFn = sanitizeResultFn;
+};
+
+CustomRegexp.prototype.exec = function(text){
+  var result = this.regexp.exec(text);
+  return this.sanitizeResultFn(result);
+}
+
+/* getCustomRegexpFilter returns a linestylefilter compatible filter for a CustomRegexp
+  @param customRegexp the CustomRegexp Object
+  @param tag the tag to be filtered
+  @param linestylefilter reference to linestylefilter module
+*/
+var getCustomRegexpFilter = function(customRegexp, tag, linestylefilter)
+{
+  var filter =  linestylefilter.getRegexpFilter(customRegexp, tag);
+  return filter;
+}
+
+exports.aceGetFilterStack = function(name, context){
+  var linestylefilter = context.linestylefilter;
+  var filter = getCustomRegexpFilter(
+    new CustomRegexp(internalHrefRegexp, linkSanitizingFn),
+    'internalHref',
+    linestylefilter
+  );
+  return [filter];
+}
 
