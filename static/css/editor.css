@@ -1,5 +1,6 @@
 quotation {
-  margin: 1em 3em;
+  display:block;
+  margin: 0em 0em 0em 3em;
   border-left: 2px solid #999;
   padding-left: 1em; 
 }
