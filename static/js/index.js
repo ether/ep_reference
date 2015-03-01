@@ -101,9 +101,17 @@ function referenceCreate(e, context){
 // Inserts the quotation into the pad
 function insertQuotation(padId, text, context){
   var padeditor = require('ep_etherpad-lite/static/js/pad_editor').padeditor;
-  // Puts the completed form data in the pad.
-  // padeditor.ace.replaceRange(undefined, undefined, "\n");
+
+  // Clean the text - remove any trailing line breaks.
+  text = text.replace(/\n$/, '');
+  text = text.replace(/\r$/, '');
+
+  // Put the clipboard into the pad
   padeditor.ace.replaceRange(undefined, undefined, text);
+
+  // insert a line break
+  // padeditor.ace.replaceRange(undefined, undefined, "\n");
+
   // Put the caret back into the pad
   padeditor.ace.focus();
   // How many line breaks are in the pasted text?
@@ -152,7 +160,6 @@ exports.applyQuotation = function(padId, numberOfLines){
   var firstLine = lastLine - (numberOfLines-1);
 
   // Line number is wrong if line breaks are copied...
-
   underscore(underscore.range(firstLine, lastLine + 1)).each(function(i){
     documentAttributeManager.setAttributeOnLine(i, 'quotation', padId); // make the line a task list
   });
