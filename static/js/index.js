@@ -1,6 +1,7 @@
 /* Include the Security module, we will use this later to escape a HTML attribute*/
 var Security = require('ep_etherpad-lite/static/js/security');
 var underscore = require('ep_etherpad-lite/static/js/underscore');
+var originalRight = 0;
 
 exports.aceEditorCSS = function(){
   return ['ep_reference/static/css/editor.css'];
@@ -48,14 +49,13 @@ exports.postAceInit = function(name, context){
     });
   });
 
-  // Hide chat and users
-  if($('#options-chatandusers').is(":checked")){
-    $('#options-chatandusers').click();
-  }
-  chat.stickToScreen(false);
-  chat.hide();
-  $('#editorcontainer').css("right","450px");
-  $('#chatbox').hide();
+  $('#options-reference').click(function(){
+    if($(this).is(':checked')){
+      referenceShow();
+    }else{
+      referenceHide();
+    }
+  });
 
   $('#referenceForm').submit(function(e){
     loadPad($('#referenceInput').val());
@@ -288,3 +288,21 @@ exports.aceGetFilterStack = function(name, context){
   return [filter];
 }
 
+function referenceShow(){
+  $('#referenceContainer').show();
+
+  // Hide chat and users
+  if($('#options-chatandusers').is(":checked")){
+    $('#options-chatandusers').click();
+  }
+  chat.stickToScreen(false);
+  chat.hide();
+  originalRight = $('#editorcontainer').css("right");
+  $('#editorcontainer').css("right","400px");
+  $('#chatbox').hide();
+}
+
+function referenceHide(){
+  $('#referenceContainer').hide();
+  $('#editorcontainer').css("right",originalRight);
+}
