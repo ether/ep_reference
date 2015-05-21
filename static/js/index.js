@@ -291,15 +291,19 @@ exports.aceGetFilterStack = function(name, context){
 function referenceShow(){
   $('#referenceContainer').show();
 
+  // Commented out to leave to the user to decide
+/*
   // Hide chat and users
   if($('#options-chatandusers').is(":checked")){
     $('#options-chatandusers').click();
   }
   chat.stickToScreen(false);
   chat.hide();
+  $('#chatbox').hide();
+*/
+
   originalRight = $('#editorcontainer').css("right");
   $('#editorcontainer').css("right","400px");
-  $('#chatbox').hide();
 }
 
 function referenceHide(){
