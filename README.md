@@ -1,6 +1,6 @@
 # Reference Content from Other Pads
 
-![Reference](http://xx)
+![Reference](http://i.imgur.com/oHJFqZ7.png)
 
 ## Installation
 Install using /admin/plugins or npm install ep_reference

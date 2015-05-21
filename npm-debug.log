@@ -1,0 +1,94 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/local/bin/node', '/usr/local/bin/npm', 'publish' ]
+2 info using npm@2.7.4
+3 info using node@v0.12.2
+4 verbose publish [ '.' ]
+5 silly cache add args [ '.', null ]
+6 verbose cache add spec .
+7 silly cache add parsed spec { raw: '.',
+7 silly cache add   scope: null,
+7 silly cache add   name: null,
+7 silly cache add   rawSpec: '.',
+7 silly cache add   spec: '/home/jose/etherpad-lite/node_modules/ep_reference',
+7 silly cache add   type: 'directory' }
+8 verbose addLocalDirectory /home/jose/.npm/ep_reference/0.0.10/package.tgz not in flight; packing
+9 verbose tar pack [ '/home/jose/.npm/ep_reference/0.0.10/package.tgz',
+9 verbose tar pack   '/home/jose/etherpad-lite/node_modules/ep_reference' ]
+10 verbose tarball /home/jose/.npm/ep_reference/0.0.10/package.tgz
+11 verbose folder /home/jose/etherpad-lite/node_modules/ep_reference
+12 info prepublish ep_reference@0.0.10
+13 verbose addLocalTarball adding from inside cache /home/jose/.npm/ep_reference/0.0.10/package.tgz
+14 silly cache afterAdd ep_reference@0.0.10
+15 verbose afterAdd /home/jose/.npm/ep_reference/0.0.10/package/package.json not in flight; writing
+16 verbose afterAdd /home/jose/.npm/ep_reference/0.0.10/package/package.json written
+17 silly publish { name: 'ep_reference',
+17 silly publish   description: 'Reference content from other Pads',
+17 silly publish   version: '0.0.10',
+17 silly publish   author:
+17 silly publish    { name: 'johnyma22',
+17 silly publish      email: 'john@mclear.co.uk',
+17 silly publish      url: 'John McLear' },
+17 silly publish   repository:
+17 silly publish    { type: 'git',
+17 silly publish      url: 'https://github.com/JohnMcLear/ep_reference.git' },
+17 silly publish   readme: '# Reference Content from Other Pads\n\n![Reference](http://xx)\n\n## Installation\nInstall using /admin/plugins or npm install ep_reference\n\n## Usage\n\n## TODO\n* Perhaps load Reference contents on hover?\n* Stop CSS being applied from pad contents in current DOM (probably use iframe)\n* Security Audit\n* Styling\n* Only allow "Create reference" once text is selected\n* On click/hover of reference content have it jump to correct point in reference document not entire reference document\n* Write test coverage\n',
+17 silly publish   readmeFilename: 'README.md',
+17 silly publish   gitHead: 'e8cb13c54dbe1f484cbe96bef2f3f94d20d2d1bd',
+17 silly publish   bugs: { url: 'https://github.com/JohnMcLear/ep_reference/issues' },
+17 silly publish   homepage: 'https://github.com/JohnMcLear/ep_reference',
+17 silly publish   _id: 'ep_reference@0.0.10',
+17 silly publish   scripts: {},
+17 silly publish   _shasum: '5d975fb13e36d35c214594507e41a506e8b88aa4',
+17 silly publish   _from: '.' }
+18 silly mapToRegistry name ep_reference
+19 silly mapToRegistry using default registry
+20 silly mapToRegistry registry https://registry.npmjs.org/
+21 silly mapToRegistry uri https://registry.npmjs.org/ep_reference
+22 verbose publish registryBase https://registry.npmjs.org/
+23 silly publish uploading /home/jose/.npm/ep_reference/0.0.10/package.tgz
+24 verbose request uri https://registry.npmjs.org/ep_reference
+25 verbose request sending authorization for write operation
+26 info attempt registry request try #1 at 11:29:14
+27 verbose request id 3001026b6e4dffda
+28 http request PUT https://registry.npmjs.org/ep_reference
+29 http 404 https://registry.npmjs.org/ep_reference
+30 verbose headers { 'content-type': 'application/json',
+30 verbose headers   'cache-control': 'max-age=0',
+30 verbose headers   'content-length': '21',
+30 verbose headers   'accept-ranges': 'bytes',
+30 verbose headers   date: 'Thu, 21 May 2015 10:29:16 GMT',
+30 verbose headers   via: '1.1 varnish',
+30 verbose headers   connection: 'keep-alive',
+30 verbose headers   'x-served-by': 'cache-lhr6334-LHR',
+30 verbose headers   'x-cache': 'MISS',
+30 verbose headers   'x-cache-hits': '0',
+30 verbose headers   'x-timer': 'S1432204155.126920,VS0,VE1142' }
+31 verbose request invalidating /home/jose/.npm/registry.npmjs.org/ep_reference on PUT
+32 error publish Failed PUT 404
+33 verbose stack Error: Not found : ep_reference
+33 verbose stack     at CachingRegistryClient.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:247:14)
+33 verbose stack     at Request._callback (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:170:14)
+33 verbose stack     at Request.self.callback (/usr/local/lib/node_modules/npm/node_modules/request/request.js:344:22)
+33 verbose stack     at Request.emit (events.js:110:17)
+33 verbose stack     at Request.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/request/request.js:1239:14)
+33 verbose stack     at Request.emit (events.js:129:20)
+33 verbose stack     at IncomingMessage.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/request/request.js:1187:12)
+33 verbose stack     at IncomingMessage.emit (events.js:129:20)
+33 verbose stack     at _stream_readable.js:908:16
+33 verbose stack     at process._tickCallback (node.js:355:11)
+34 verbose statusCode 404
+35 verbose pkgid ep_reference
+36 verbose cwd /home/jose/etherpad-lite/node_modules/ep_reference
+37 error Linux 3.19.0-15-generic
+38 error argv "/usr/local/bin/node" "/usr/local/bin/npm" "publish"
+39 error node v0.12.2
+40 error npm  v2.7.4
+41 error code E404
+42 error 404 Not found : ep_reference
+42 error 404
+42 error 404 'ep_reference' is not in the npm registry.
+42 error 404 You should bug the author to publish it (or use the name yourself!)
+42 error 404
+42 error 404 Note that you can also install from a
+42 error 404 tarball, folder, http url, or git url.
+43 verbose exit [ 1, true ]
