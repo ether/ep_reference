@@ -1,3 +1,5 @@
+'use strict';
+
 /* Include the Security module, we will use this later to escape a HTML attribute*/
 var Security = require('ep_etherpad-lite/static/js/security');
 var underscore = require('ep_etherpad-lite/static/js/underscore');
@@ -33,7 +35,7 @@ exports.aceInitialized = function (hook, context) {
 };
 
 exports.postAceInit = function (name, context) {
-  context.ace.callWithAce((ace)=> {
+  context.ace.callWithAce((ace) => {
     let doc = ace.ace_getDocument();
     // Hide the controls by default -- I'm nto sure why I don't do this with CSS
 
@@ -175,7 +177,7 @@ exports.aceAttribsToClasses = function (hook_name, args, cb) {
 };
 
 // Here we convert the class reference into a tag
-exports.aceDomLineProcessLineAttributes = function (name, context) {
+exports.aceDomLineProcessLineAttributes = (name, context) => {
   let cls = context.cls;
   let domline = context.domline;
   let padId = /(?:^| )reference:([A-Za-z0-9]*)/.exec(cls);
@@ -203,29 +205,27 @@ exports.aceDomLineProcessLineAttributes = function (name, context) {
 // The below code is borrowed from ep_linkify and modified to open
 // internally on click while maintaing the ability to open in a new window
 
-exports.aceCreateDomLine = function (name, context) {
+exports.aceCreateDomLine = (name, context) => {
   let internalHref;
   let cls = context.cls;
-  let domline = context.domline;
 
   // TODO find a more elegant way.
-  let inTimeslider = (timesliderRegexp.exec(document.location.href) !== null);
+  const inTimeslider = (timesliderRegexp.exec(document.location.href) !== null);
 
-  if (cls.indexOf('internalHref') >= 0) // if it already has the class of internalHref
-  {
-    cls = cls.replace(/(^| )internalHref:(\S+)/g, (x0, space, url)
-    => {
+  // if it already has the class of internalHref
+  if (cls.indexOf('internalHref') >= 0) {
+    cls = cls.replace(/(^| )internalHref:(\S+)/g, (x0, space, url) => {
       internalHref = url;
-      return `${space  }url`;
+      return `${space}url`;
     });
   }
 
   if (internalHref) {
-    let url = (inTimeslider ? '../' : './') + internalHref;
-    let modifier = {
-      extraOpenTags: `<a onClick="openInternally()" href="${  Security.escapeHTMLAttribute(url) }">`,
+    const url = (inTimeslider ? '../' : './') + internalHref;
+    const modifier = {
+      extraOpenTags: `<a onClick="openInternally()" href="${Security.escapeHTMLAttribute(url)}">`,
       extraCloseTags: '</a>',
-      cls
+      cls,
     };
     return [modifier];
   }
