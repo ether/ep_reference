@@ -16,12 +16,12 @@ exports.aceRegisterBlockElements = function () {
 exports.handleClientMessage_CUSTOM = function (hook, context, cb) {
   if (context.payload) {
     if (context.payload.action == 'recievereferenceMessage') {
-      let message = context.payload.message;
+      const message = context.payload.message;
       if (message) {
         $(message).each(function () {
-          let title = this.meta.words[0].word;
-          let text = this.glossary;
-          $.gritter.add({title: `${title  } - ${  this.meta.synsetType}`, text: text});
+          const title = this.meta.words[0].word;
+          const text = this.glossary;
+          $.gritter.add({title: `${title} - ${this.meta.synsetType}`, text});
           return false; // end the each
         });
       }
@@ -30,20 +30,20 @@ exports.handleClientMessage_CUSTOM = function (hook, context, cb) {
 };
 
 exports.aceInitialized = function (hook, context) {
-  let editorInfo = context.editorInfo;
+  const editorInfo = context.editorInfo;
   editorInfo.ace_applyQuotation = underscore(exports.applyQuotation).bind(context);
 };
 
 exports.postAceInit = function (name, context) {
   context.ace.callWithAce((ace) => {
-    let doc = ace.ace_getDocument();
+    const doc = ace.ace_getDocument();
     // Hide the controls by default -- I'm nto sure why I don't do this with CSS
 
     $(doc).find('head').append("<style type='text/css'>.control{display:none;}</style>");
-    let $inner = $(doc).find('#innerdocbody');
+    const $inner = $(doc).find('#innerdocbody');
 
     // On click ensure all image controls are hidden
-    $inner.on('click', '.url > a', (e)=> {
+    $inner.on('click', '.url > a', (e) => {
       console.log(e);
       loadPad(e.currentTarget.text);
       return false;
@@ -58,22 +58,22 @@ exports.postAceInit = function (name, context) {
     }
   });
 
-  $('#referenceForm').submit((e)=> {
+  $('#referenceForm').submit((e) => {
     loadPad($('#referenceInput').val());
     e.preventDefault();
   });
 
-  $('#quotationCreate').click((e)=> {
+  $('#quotationCreate').click((e) => {
     quotationCreate(e, context);
   });
-  $('#referenceCreate').click((e)=> {
+  $('#referenceCreate').click((e) => {
     referenceCreate(e, context);
   });
 
-  let padOuter = $('iframe[name="ace_outer"]').contents();
-  let padInner = padOuter.find('iframe[name="ace_inner"]');
+  const padOuter = $('iframe[name="ace_outer"]').contents();
+  const padInner = padOuter.find('iframe[name="ace_inner"]');
 
-  padInner.contents().on('mousedown', 'reference' , function (e) {
+  padInner.contents().on('mousedown', 'reference', (e) => {
     loadReference(e);
   });
 };
@@ -88,20 +88,20 @@ function quotationCreate(e, context) {
     text = document.selection.createRange().text;
   }
 
-  let padId = $('#referenceInput').val();
+  const padId = $('#referenceInput').val();
   insertQuotation(padId, text, context);
 }
 
 // Creates a reference event when a user clicks on the button
 // Gets the text string to reference and the padId
 function referenceCreate(e, context) {
-  let padId = $('#referenceInput').val();
+  const padId = $('#referenceInput').val();
   insertReference(padId, context);
 }
 
 // Inserts the quotation into the pad
 function insertQuotation(padId, text, context) {
-  let padeditor = require('ep_etherpad-lite/static/js/pad_editor').padeditor;
+  const padeditor = require('ep_etherpad-lite/static/js/pad_editor').padeditor;
 
   // Clean the text - remove any trailing line breaks.
   text = text.replace(/\n$/, '');
@@ -116,19 +116,19 @@ function insertQuotation(padId, text, context) {
   // Put the caret back into the pad
   padeditor.ace.focus();
   // How many line breaks are in the pasted text?
-  let numberOfLines = text.split(/\r\n|\r|\n/).length;
-  context.ace.callWithAce((ace)=> { // call the function to apply the attribute inside ACE
+  const numberOfLines = text.split(/\r\n|\r|\n/).length;
+  context.ace.callWithAce((ace) => { // call the function to apply the attribute inside ACE
     ace.ace_applyQuotation(padId, numberOfLines);
   }, 'reference', true); // TODO what's the second attribute do here?
 }
 
 // Inserts the reference into the pad
 function insertReference(padId, context) {
-  let padeditor = require('ep_etherpad-lite/static/js/pad_editor').padeditor;
+  const padeditor = require('ep_etherpad-lite/static/js/pad_editor').padeditor;
 
   // Puts the completed form data in the pad.
   // padeditor.ace.replaceRange(undefined, undefined, "\n");
-  padeditor.ace.replaceRange(undefined, undefined, '[['+padId + "]]");
+  padeditor.ace.replaceRange(undefined, undefined, `[[${padId}]]`);
 
   // Put the caret back into the pad
   padeditor.ace.focus();
@@ -137,31 +137,31 @@ function insertReference(padId, context) {
 // Loads a Pads HTML from the export endpoint
 function loadPad(padId) {
   $.ajax({
-    url: './'+padId + "/export/html",
-    success(html){
+    url: `./${padId}/export/html`,
+    success(html) {
       $('#reference').html(html); // Writes HTML to container
-      $('#referenceCreate').attr("disabled", false);
-      $('#quotationCreate').attr("disabled", false);
-    }
+      $('#referenceCreate').attr('disabled', false);
+      $('#quotationCreate').attr('disabled', false);
+    },
   });
 }
 
 // Performed when a reference is clicked in the Pad, needs to know padId
 function loadReference(e) {
-  let padId = e.currentTarget.dataset.padid;
+  const padId = e.currentTarget.dataset.padid;
   loadPad(padId);
 }
 
 // Applies the line attribute to the previous line
 exports.applyQuotation = function (padId, numberOfLines) {
-  let ace = this;
-  let rep = this.rep;
-  let documentAttributeManager = this.documentAttributeManager;
-  let lastLine = rep.selStart[0];
-  let firstLine = lastLine - (numberOfLines - 1);
+  const ace = this;
+  const rep = this.rep;
+  const documentAttributeManager = this.documentAttributeManager;
+  const lastLine = rep.selStart[0];
+  const firstLine = lastLine - (numberOfLines - 1);
 
   // Line number is wrong if line breaks are copied...
-  underscore(underscore.range(firstLine, lastLine + 1)).each((i)=> {
+  underscore(underscore.range(firstLine, lastLine + 1)).each((i) => {
     documentAttributeManager.setAttributeOnLine(i, 'quotation', padId); // make the line a task list
   });
 };
@@ -169,17 +169,17 @@ exports.applyQuotation = function (padId, numberOfLines) {
 
 exports.aceAttribsToClasses = function (hook_name, args, cb) {
   if (args.key == 'reference' && args.value != '') {
-    return cb(['reference:' + args.value]);
+    return cb([`reference:${args.value}`]);
   }
   if (args.key == 'quotation' && args.value != '') {
-    return cb(['quotation:' + args.value]);
+    return cb([`quotation:${args.value}`]);
   }
 };
 
 // Here we convert the class reference into a tag
 exports.aceDomLineProcessLineAttributes = (name, context) => {
-  let cls = context.cls;
-  let domline = context.domline;
+  const cls = context.cls;
+  const domline = context.domline;
   let padId = /(?:^| )reference:([A-Za-z0-9]*)/.exec(cls);
   if (padId) {
     padId = padId[1];
@@ -243,7 +243,7 @@ var timesliderRegexp = new RegExp(/p\/[^\/]*\/timeslider/g);
 var linkSanitizingFn = function (result) {
   if (!result) return result;
   result.index += 2;
-  let s = result[0];
+  const s = result[0];
   result[0] = s
       .substr(2, s.length - 4) // Skip the first two chars ([[) and omit the last ones (]])
       .replace(/\s+/g, '_'); // Every space will be replaced by an underscore
@@ -261,7 +261,7 @@ var CustomRegexp = function (regexp, sanitizeResultFn) {
 };
 
 CustomRegexp.prototype.exec = function (text) {
-  let result = this.regexp.exec(text);
+  const result = this.regexp.exec(text);
   return this.sanitizeResultFn(result);
 };
 
@@ -271,13 +271,13 @@ CustomRegexp.prototype.exec = function (text) {
   @param linestylefilter reference to linestylefilter module
 */
 var getCustomRegexpFilter = function (customRegexp, tag, linestylefilter) {
-  let filter = linestylefilter.getRegexpFilter(customRegexp, tag);
+  const filter = linestylefilter.getRegexpFilter(customRegexp, tag);
   return filter;
 };
 
 exports.aceGetFilterStack = function (name, context) {
-  let linestylefilter = context.linestylefilter;
-  let filter = getCustomRegexpFilter(
+  const linestylefilter = context.linestylefilter;
+  const filter = getCustomRegexpFilter(
       new CustomRegexp(internalHrefRegexp, linkSanitizingFn),
       'internalHref',
       linestylefilter,
@@ -300,7 +300,7 @@ function referenceShow() {
 */
 
   originalRight = $('#editorcontainer').css('right');
-  $('#editorcontainer').css('right', "400px");
+  $('#editorcontainer').css('right', '400px');
 }
 
 function referenceHide() {
