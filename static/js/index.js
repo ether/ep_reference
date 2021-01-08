@@ -280,7 +280,7 @@ exports.aceGetFilterStack = function (name, context) {
   const filter = getCustomRegexpFilter(
       new CustomRegexp(internalHrefRegexp, linkSanitizingFn),
       'internalHref',
-      linestylefilter,
+      linestylefilter
   );
   return [filter];
 };
