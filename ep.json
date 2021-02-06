@@ -16,8 +16,7 @@
       "hooks": {
         "eejsBlock_body":"ep_reference/eejs",
         "eejsBlock_mySettings":"ep_reference/eejs",
-        "eejsBlock_dd_help":"ep_reference/eejs",
-        "handleMessage": "ep_reference/handleMessage"
+        "eejsBlock_dd_help":"ep_reference/eejs"
       }
     }
   ]
