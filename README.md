@@ -1,3 +1,5 @@
+![Publish Status](https://github.com/ether/ep_reference/workflows/Node.js%20Package/badge.svg) ![Backend Tests Status](https://github.com/ether/ep_reference/workflows/Backend%20tests/badge.svg)
+
 # Reference Content from Other Pads
 
 ![Reference](http://i.imgur.com/oHJFqZ7.png)
