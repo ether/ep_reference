@@ -1,7 +1,7 @@
 {
   "name": "ep_reference",
   "description": "Reference content from other Pads",
-  "version": "0.0.23",
+  "version": "0.0.24",
   "author": "johnyma22 (John McLear) <john@mclear.co.uk>",
   "repository": {
     "type": "git",
