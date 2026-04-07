@@ -5,7 +5,7 @@
 ![Reference](http://i.imgur.com/oHJFqZ7.png)
 
 ## Installation
-Install using /admin/plugins or npm install ep_reference
+Install using /admin/plugins or pnpm run plugins install ep_reference
 
 ## Usage
 
