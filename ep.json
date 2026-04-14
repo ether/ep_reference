@@ -11,7 +11,8 @@
         "aceRegisterBlockElements": "ep_reference/static/js/index",
         "aceEditorCSS":"ep_reference/static/js/index",
         "aceCreateDomLine":"ep_reference/static/js/index",
-        "aceGetFilterStack":"ep_reference/static/js/index"
+        "aceGetFilterStack":"ep_reference/static/js/index",
+        "aceRegisterLineAttributes":"ep_reference/static/js/index"
       },
       "hooks": {
         "eejsBlock_body":"ep_reference/eejs",

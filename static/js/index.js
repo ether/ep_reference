@@ -8,6 +8,7 @@ let originalRight = 0;
 exports.aceEditorCSS = () => ['ep_reference/static/css/editor.css'];
 
 exports.aceRegisterBlockElements = () => ['reference', 'quotation'];
+exports.aceRegisterLineAttributes = () => ['reference', 'quotation'];
 
 exports.handleClientMessage_CUSTOM = (hook, context, cb) => {
   if (context.payload) {
