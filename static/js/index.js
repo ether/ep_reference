@@ -3,7 +3,26 @@
 /* Include the Security module, we will use this later to escape a HTML attribute*/
 const Security = require('ep_etherpad-lite/static/js/security');
 const underscore = require('ep_etherpad-lite/static/js/underscore');
+// Sub-path import keeps the client bundle clean. Importing the top-level
+// `ep_plugin_helpers` index pulls in every helper's getters; `settings` and
+// `toggle` reach server-only modules (eejs, Settings) which esbuild can't
+// resolve for the browser.
+const {padToggle} = require('ep_plugin_helpers/pad-toggle');
 let originalRight = 0;
+
+// Same config as the server-side instance — must agree on pluginName,
+// settingId, and l10nId for the checkbox ids and clientVars lookup to line up.
+const referenceToggle = padToggle({
+  pluginName: 'ep_reference',
+  settingId: 'reference',
+  l10nId: 'ep_reference.title',
+  defaultLabel: 'Show Reference / Quote creator',
+  defaultEnabled: false,
+});
+
+// Re-export so the helper sees pad-wide broadcasts and refreshes our state
+// when another user toggles the pad-wide checkbox.
+exports.handleClientMessage_CLIENT_MESSAGE = referenceToggle.handleClientMessage_CLIENT_MESSAGE;
 
 exports.aceEditorCSS = () => ['ep_reference/static/css/editor.css'];
 
@@ -47,12 +66,8 @@ exports.postAceInit = (name, context) => {
     });
   });
 
-  $('#options-reference').click(function () {
-    if ($(this).is(':checked')) {
-      referenceShow();
-    } else {
-      referenceHide();
-    }
+  referenceToggle.init({
+    onChange: (enabled) => { enabled ? referenceShow() : referenceHide(); },
   });
 
   $('#referenceForm').submit((e) => {

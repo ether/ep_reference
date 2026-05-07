@@ -5,6 +5,7 @@
       "client_hooks": {
         "postAceInit": "ep_reference/static/js/index:postAceInit",
         "handleClientMessage_CUSTOM": "ep_reference/static/js/index",
+        "handleClientMessage_CLIENT_MESSAGE": "ep_reference/static/js/index:handleClientMessage_CLIENT_MESSAGE",
         "aceInitialized": "ep_reference/static/js/index",
         "aceAttribsToClasses": "ep_reference/static/js/index",
         "aceDomLineProcessLineAttributes": "ep_reference/static/js/index",
@@ -15,9 +16,12 @@
         "aceRegisterLineAttributes":"ep_reference/static/js/index"
       },
       "hooks": {
-        "eejsBlock_body":"ep_reference/eejs",
-        "eejsBlock_mySettings":"ep_reference/eejs",
-        "eejsBlock_dd_help":"ep_reference/eejs"
+        "loadSettings": "ep_reference/index",
+        "clientVars": "ep_reference/index",
+        "eejsBlock_body": "ep_reference/index",
+        "eejsBlock_mySettings": "ep_reference/index",
+        "eejsBlock_padSettings": "ep_reference/index",
+        "eejsBlock_dd_help": "ep_reference/index"
       }
     }
   ]
