@@ -1,5 +1,7 @@
 'use strict';
 
+const {template} = require('ep_plugin_helpers');
+
 const eejs = require('ep_etherpad-lite/node/eejs/');
 const {padToggle} = require('ep_plugin_helpers/pad-toggle-server');
 
@@ -19,10 +21,8 @@ exports.clientVars = referenceToggle.clientVars;
 exports.eejsBlock_mySettings = referenceToggle.eejsBlock_mySettings;
 exports.eejsBlock_padSettings = referenceToggle.eejsBlock_padSettings;
 
-exports.eejsBlock_body = (hookName, args, cb) => {
-  args.content += eejs.require('ep_reference/templates/reference.ejs');
-  cb();
-};
+exports.eejsBlock_body =
+    template('ep_reference/templates/reference.ejs');
 
 exports.eejsBlock_dd_help = (hookName, args, cb) => {
   cb();
