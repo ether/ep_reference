@@ -2,7 +2,7 @@
 
 const {template} = require('ep_plugin_helpers');
 
-const eejs = require('ep_etherpad-lite/node/eejs/');
+const eejs = require('ep_etherpad-lite/node/eejs');
 const {padToggle} = require('ep_plugin_helpers/pad-toggle-server');
 
 // Parallel User Settings + Pad Wide Settings checkboxes for the reference
